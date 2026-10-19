@@ -1,0 +1,302 @@
+# -*- coding: utf-8 -*-
+import os
+import threading
+from flask import Flask
+import telebot
+from telebot import types
+from collections import defaultdict
+
+TOKEN = os.getenv("BOT_TOKEN")
+ADMIN_IDS = [7145036494]
+CHANNEL = "@pkwbiwjwbekeekkw"
+CHANNEL_URL = "https://t.me/pkwbiwjwbekeekkw"
+ADMIN_URL = "https://t.me/TQ4YE"
+STORE = "\u0645\u062a\u062c\u0631 \u0627\u0628\u0644\u064a\u0633 \u0644\u0644\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u0648\u0647\u0645\u064a\u0629 \u0648\u0641\u0643 \u0627\u0644\u062d\u0638\u0631"
+
+# --- Flask for Render port binding fix ---
+app = Flask(__name__)
+@app.route('/')
+def home():
+    return "Bot 100 Buttons Running"
+def run_flask():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
+threading.Thread(target=run_flask, daemon=True).start()
+# --- End Flask ---
+
+bot = telebot.TeleBot(TOKEN, parse_mode="HTML", threaded=True)
+pts = defaultdict(int)
+invited = defaultdict(set)
+state = {}
+
+def is_admin(uid):
+    return uid in ADMIN_IDS
+
+def get_pts(uid):
+    if is_admin(uid):
+        return 999999999
+    return pts.get(uid, 0)
+
+def is_sub(uid):
+    if is_admin(uid):
+        return True
+    try:
+        s = bot.get_chat_member(CHANNEL, uid).status
+        return s in ('member','administrator','creator')
+    except:
+        return False
+
+# --- 100 BUTTONS FULL NAMES ---
+FULL_NAMES = [
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0645\u0631\u064a\u0643\u0627 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0628\u0631\u064a\u0637\u0627\u0646\u064a\u0627 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0631\u0648\u0633\u064a\u0627 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u0633\u0639\u0648\u062f\u064a\u0629 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u064a\u0645\u0646 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0645\u0635\u0631 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u0645\u0627\u0646\u064a\u0627 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0641\u0631\u0646\u0633\u0627 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u062a\u0631\u0643\u064a\u0627 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u0647\u0646\u062f \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u0628\u0631\u0627\u0632\u064a\u0644 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0643\u0646\u062f\u0627 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0633\u062a\u0631\u0627\u0644\u064a\u0627 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u064a\u0637\u0627\u0644\u064a\u0627 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0633\u0628\u0627\u0646\u064a\u0627 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0647\u0648\u0644\u0646\u062f\u0627 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u0633\u0648\u064a\u062f \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0628\u0648\u0644\u0646\u062f\u0627 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u0645\u063a\u0631\u0628 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u062c\u0632\u0627\u0626\u0631 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0641\u0643 \u062d\u0638\u0631 \u0631\u0642\u0645 \u0648\u0627\u062a\u0633\u0627\u0628 \u0645\u062d\u0638\u0648\u0631",
+    "\u0641\u0643 \u062d\u0638\u0631 \u0631\u0642\u0645 \u062a\u0644\u064a\u062c\u0631\u0627\u0645 \u0645\u062d\u0638\u0648\u0631",
+    "\u0641\u0643 \u062d\u0638\u0631 \u0631\u0642\u0645 \u0627\u064a\u0645\u0648 \u0645\u062d\u0638\u0648\u0631",
+    "\u0641\u0643 \u062d\u0638\u0631 \u0631\u0642\u0645 \u0641\u064a\u0633\u0628\u0648\u0643 \u0645\u062d\u0638\u0648\u0631",
+    "\u0641\u0643 \u062d\u0638\u0631 \u062d\u0633\u0627\u0628 \u0627\u0646\u0633\u062a\u0642\u0631\u0627\u0645 \u0645\u062d\u0638\u0648\u0631",
+    "\u0641\u0643 \u062d\u0638\u0631 \u062d\u0633\u0627\u0628 \u062a\u064a\u0643 \u062a\u0648\u0643 \u0645\u062d\u0638\u0648\u0631",
+    "\u0641\u0643 \u062d\u0638\u0631 \u062d\u0633\u0627\u0628 \u062a\u0648\u064a\u062a\u0631 \u0645\u062d\u0638\u0648\u0631",
+    "\u0641\u0643 \u062d\u0638\u0631 \u062d\u0633\u0627\u0628 \u0633\u0646\u0627\u0628 \u0634\u0627\u062a \u0645\u062d\u0638\u0648\u0631",
+    "\u0641\u0643 \u062d\u0638\u0631 \u062d\u0633\u0627\u0628 \u062c\u0648\u062c\u0644 \u0645\u062d\u0638\u0648\u0631",
+    "\u0641\u0643 \u062d\u0638\u0631 \u062d\u0633\u0627\u0628 \u062f\u064a\u0633\u0643\u0648\u0631\u062f \u0645\u062d\u0638\u0648\u0631",
+    "\u0627\u064a\u0645\u064a\u0644 \u062c\u064a\u0645\u064a\u0644 \u0648\u0647\u0645\u064a \u062c\u0627\u0647\u0632 \u0644\u0644\u0628\u064a\u0639",
+    "\u0627\u064a\u0645\u064a\u0644 \u064a\u0627\u0647\u0648 \u0648\u0647\u0645\u064a \u062c\u0627\u0647\u0632 \u0644\u0644\u0628\u064a\u0639",
+    "\u0627\u064a\u0645\u064a\u0644 \u0647\u0648\u062a\u0645\u064a\u0644 \u0648\u0647\u0645\u064a \u062c\u0627\u0647\u0632 \u0644\u0644\u0628\u064a\u0639",
+    "\u0627\u064a\u0645\u064a\u0644 \u0627\u0648\u062a\u0644\u0648\u0643 \u0648\u0647\u0645\u064a \u062c\u0627\u0647\u0632 \u0644\u0644\u0628\u064a\u0639",
+    "\u0627\u064a\u0645\u064a\u0644 \u064a\u0627\u0646\u062f\u0643\u0633 \u0648\u0647\u0645\u064a \u062c\u0627\u0647\u0632 \u0644\u0644\u0628\u064a\u0639",
+    "\u0634\u062d\u0646 \u0631\u0635\u064a\u062f \u064a\u0645\u0646\u064a \u0633\u0628\u0627\u0641\u0648\u0646",
+    "\u0634\u062d\u0646 \u0631\u0635\u064a\u062f \u064a\u0645\u0646\u064a \u0648\u0627\u064a",
+    "\u0634\u062d\u0646 \u0631\u0635\u064a\u062f \u064a\u0645\u0646\u064a \u064a\u0648",
+    "\u0634\u062d\u0646 \u0631\u0635\u064a\u062f \u064a\u0645\u0646\u064a \u062a\u0644\u0643\u0648\u0645",
+    "\u0634\u062d\u0646 \u0631\u0635\u064a\u062f \u0633\u0639\u0648\u062f\u064a STC",
+    "\u0634\u062d\u0646 \u0631\u0635\u064a\u062f \u0633\u0639\u0648\u062f\u064a \u0645\u0648\u0627\u064a\u0644\u064a",
+    "\u0634\u062d\u0646 \u0631\u0635\u064a\u062f \u0645\u0635\u0631\u064a \u0641\u0648\u062f\u0627\u0641\u0648\u0646",
+    "\u0634\u062d\u0646 \u0631\u0635\u064a\u062f \u0645\u0635\u0631\u064a \u0627\u0648\u0631\u0627\u0646\u062c",
+    "\u0634\u062d\u0646 \u0631\u0635\u064a\u062f \u0645\u0635\u0631\u064a \u0627\u062a\u0635\u0627\u0644\u0627\u062a",
+    "\u0634\u062d\u0646 \u0631\u0635\u064a\u062f \u0645\u0635\u0631\u064a \u0648\u064a",
+    "\u0645\u062a\u0627\u0628\u0639\u064a\u0646 \u0627\u0646\u0633\u062a\u0642\u0631\u0627\u0645 \u062d\u0642\u064a\u0642\u064a\u0646",
+    "\u0645\u062a\u0627\u0628\u0639\u064a\u0646 \u062a\u064a\u0643 \u062a\u0648\u0643 \u062d\u0642\u064a\u0642\u064a\u0646",
+    "\u0645\u062a\u0627\u0628\u0639\u064a\u0646 \u062a\u0644\u064a\u062c\u0631\u0627\u0645 \u062d\u0642\u064a\u0646",
+    "\u0645\u062a\u0627\u0628\u0639\u064a\u0646 \u0641\u064a\u0633\u0628\u0648\u0643 \u062d\u0642\u064a\u0642\u064a\u0646",
+    "\u0645\u062a\u0627\u0628\u0639\u064a\u0646 \u062a\u0648\u064a\u062a\u0631 \u062d\u0642\u064a\u0642\u064a\u0646",
+    "\u0644\u0627\u064a\u0643\u0627\u062a \u0627\u0646\u0633\u062a\u0642\u0631\u0627\u0645 \u062d\u0642\u064a\u0642\u064a\u0629",
+    "\u0644\u0627\u064a\u0643\u0627\u062a \u062a\u064a\u0643 \u062a\u0648\u0643 \u062d\u0642\u064a\u0642\u064a\u0629",
+    "\u0644\u0627\u064a\u0643\u0627\u062a \u0641\u064a\u0633\u0628\u0648\u0643 \u062d\u0642\u064a\u0642\u064a\u0629",
+    "\u0645\u0634\u0627\u0647\u062f\u0627\u062a \u064a\u0648\u062a\u064a\u0648\u0628 \u062d\u0642\u064a\u0642\u064a\u0629",
+    "\u0645\u0634\u0627\u0647\u062f\u0627\u062a \u062a\u064a\u0643 \u062a\u0648\u0643 \u062d\u0642\u064a\u0642\u064a\u0629",
+    "\u062a\u0635\u0645\u064a\u0645 \u0634\u0639\u0627\u0631 \u0627\u062d\u062a\u0631\u0627\u0641\u064a \u062c\u0627\u0647\u0632",
+    "\u062a\u0635\u0645\u064a\u0645 \u0628\u0646\u0631 \u0627\u062d\u062a\u0631\u0627\u0641\u064a \u062c\u0627\u0647\u0632",
+    "\u062a\u0635\u0645\u064a\u0645 \u0633\u064a\u0631\u0629 \u0630\u0627\u062a\u064a\u0629 \u0627\u062d\u062a\u0631\u0627\u0641\u064a\u0629",
+    "\u062a\u0635\u0645\u064a\u0645 \u0645\u0648\u0642\u0639 \u0627\u0644\u0643\u062a\u0631\u0648\u0646\u064a \u062c\u0627\u0647\u0632",
+    "\u062a\u0635\u0645\u064a\u0645 \u0641\u064a\u062f\u064a\u0648 \u0645\u0648\u0634\u0646 \u062c\u0631\u0627\u0641\u064a\u0643",
+    "\u0627\u0633\u062a\u0636\u0627\u0641\u0629 \u0645\u0644\u0641 \u0639\u0644\u0649 \u0633\u064a\u0631\u0641\u0631 \u062f\u0627\u0626\u0645",
+    "\u0627\u0633\u062a\u0636\u0627\u0641\u0629 \u0635\u0648\u0631 \u0639\u0644\u0649 \u0633\u064a\u0631\u0641\u0631 \u062f\u0627\u0626\u0645",
+    "\u0627\u0633\u062a\u0636\u0627\u0641\u0629 \u0641\u064a\u062f\u064a\u0648 \u0639\u0644\u0649 \u0633\u064a\u0631\u0641\u0631 \u062f\u0627\u0626\u0645",
+    "\u0627\u0633\u062a\u0636\u0627\u0641\u0629 \u0645\u0648\u0642\u0639 \u0639\u0644\u0649 \u0633\u064a\u0631\u0641\u0631 \u062f\u0627\u0626\u0645",
+    "\u0627\u0633\u062a\u0636\u0627\u0641\u0629 \u0628\u0648\u062a \u062a\u0644\u064a\u062c\u0631\u0627\u0645 \u062f\u0627\u0626\u0645",
+    "\u0627\u062f\u0627\u0629 \u0641\u062d\u0635 \u0627\u0644\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u0648\u0647\u0645\u064a\u0629",
+    "\u0627\u062f\u0627\u0629 \u0641\u062d\u0635 \u0627\u0644\u0627\u064a\u0645\u064a\u0644\u0627\u062a \u0627\u0644\u0648\u0647\u0645\u064a\u0629",
+    "\u0627\u062f\u0627\u0629 \u062a\u0648\u0644\u064a\u062f \u0627\u0631\u0642\u0627\u0645 \u0648\u0647\u0645\u064a\u0629",
+    "\u0627\u062f\u0627\u0629 \u062a\u0648\u0644\u064a\u062f \u0627\u064a\u0645\u064a\u0644\u0627\u062a \u0648\u0647\u0645\u064a\u0629",
+    "\u0627\u062f\u0627\u0629 \u0633\u062d\u0628 \u0627\u0639\u0636\u0627\u0621 \u0642\u0631\u0648\u0628",
+    "\u0627\u062f\u0627\u0629 \u0631\u0634\u0642 \u0627\u0639\u0636\u0627\u0621 \u0642\u0631\u0648\u0628",
+    "\u0627\u062f\u0627\u0629 \u062d\u0630\u0641 \u0631\u0633\u0627\u0626\u0644 \u0627\u0644\u0642\u0631\u0648\u0628",
+    "\u0627\u0631\u0628\u062d \u0646\u0642\u0637\u062a\u064a\u0646 \u0639\u0646 \u0643\u0644 \u062f\u0639\u0648\u0629 \u0635\u062f\u064a\u0642",
+    "\u0634\u0627\u0647\u062f \u0627\u0639\u0644\u0627\u0646 \u0648\u0627\u0631\u0628\u062d \u0646\u0642\u0637\u0629 \u0648\u0627\u062d\u062f\u0629",
+    "\u0634\u0631\u0627\u0621 \u0646\u0642\u0627\u0637 \u0628\u0633\u0639\u0631 \u0631\u062e\u064a\u0635 \u062c\u062f\u0627",
+    "\u062a\u0648\u0627\u0635\u0644 \u0645\u0639 \u0627\u0644\u0627\u062f\u0645\u0646 \u0645\u0628\u0627\u0634\u0631\u0629",
+    "\u0631\u0635\u064a\u062f\u064a \u0627\u0644\u062d\u0627\u0644\u064a \u0641\u064a \u0627\u0644\u0645\u062a\u062c\u0631",
+    "\u0642\u0648\u0627\u0646\u064a\u0646 \u0648\u0634\u0631\u0648\u0637 \u0627\u0644\u0645\u062a\u062c\u0631 \u0627\u0644\u0643\u0627\u0645\u0644\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u0639\u0631\u0627\u0642 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0633\u0648\u0631\u064a\u0627 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u0627\u0631\u062f\u0646 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0644\u0628\u0646\u0627\u0646 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u0627\u0645\u0627\u0631\u0627\u062a \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u0643\u0648\u064a\u062a \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0639\u0645\u0627\u0646 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0642\u0637\u0631 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u0628\u062d\u0631\u064a\u0646 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u064a\u0631\u0627\u0646 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0628\u0627\u0643\u0633\u062a\u0627\u0646 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0628\u0646\u063a\u0644\u0627\u062f\u064a\u0634 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0646\u062f\u0648\u0646\u064a\u0633\u064a\u0627 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0645\u0627\u0644\u064a\u0632\u064a\u0627 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u0641\u0644\u0628\u064a\u0646 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u062a\u0627\u064a\u0644\u0646\u062f \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0641\u064a\u062a\u0646\u0627\u0645 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u0635\u064a\u0646 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0627\u0644\u064a\u0627\u0628\u0627\u0646 \u0648\u0647\u0645\u064a\u0629 \u062c\u0627\u0647\u0632\u0629",
+    "\u0627\u0631\u0642\u0627\u0645 \u0643\u0648\u0631\u064a\u0627 \u0627\u0644\u062c\u0646\u0648\u0628\u064a\u0629 \u0648\u0647\u0645\u064a\u0629"
+]
+
+def get_buttons_page(page=0):
+    per_page = 10
+    start = page * per_page
+    end = min(start+per_page, 100)
+    mk = types.InlineKeyboardMarkup(row_width=1)
+    for i in range(start, end):
+        mk.add(types.InlineKeyboardButton(FULL_NAMES[i], callback_data=f"btn_{i+1}"))
+    nav = []
+    if page > 0:
+        nav.append(types.InlineKeyboardButton("\u0627\u0644\u0633\u0627\u0628\u0642", callback_data=f"page_{page-1}"))
+    if end < 100:
+        nav.append(types.InlineKeyboardButton("\u0627\u0644\u062a\u0627\u0644\u064a", callback_data=f"page_{page+1}"))
+    if nav:
+        mk.add(*nav)
+    mk.add(types.InlineKeyboardButton("\u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629", callback_data="back_main"))
+    return mk
+
+def main_menu():
+    mk = types.InlineKeyboardMarkup(row_width=2)
+    mk.add(
+        types.InlineKeyboardButton("\u0639\u0631\u0636 \u0627\u0644\u0640 100 \u0632\u0631 \u0643\u0627\u0645\u0644\u0629", callback_data="show_100"),
+        types.InlineKeyboardButton("\u0627\u0631\u0628\u062d 2 \u0646\u0642\u0637\u0629 \u062f\u0639\u0648\u0629", callback_data="invite"),
+        types.InlineKeyboardButton("\u0634\u0627\u0647\u062f \u0627\u0639\u0644\u0627\u0646 +1", callback_data="ads"),
+        types.InlineKeyboardButton("\u0627\u0633\u062a\u0636\u0627\u0641\u0629 \u0645\u0644\u0641", callback_data="cat_files"),
+        types.InlineKeyboardButton("\u0631\u0635\u064a\u062f\u064a", callback_data="my_pts"),
+        types.InlineKeyboardButton("\u062a\u0648\u0627\u0635\u0644 \u0627\u062f\u0645\u0646", url=ADMIN_URL)
+    )
+    return mk
+
+@bot.message_handler(commands=['start','myid'])
+def start_cmd(m):
+    try:
+        if m.text.startswith('/myid'):
+            bot.reply_to(m, f"ID: {m.from_user.id} - Points: {get_pts(m.from_user.id)}")
+            return
+        ref_id = None
+        parts = m.text.split()
+        if len(parts) > 1 and parts[1].startswith('ref_'):
+            try:
+                ref_id = int(parts[1].replace('ref_',''))
+            except:
+                pass
+        if ref_id and ref_id != m.from_user.id and m.from_user.id not in invited[ref_id]:
+            if not is_admin(ref_id):
+                pts[ref_id] += 2
+            invited[ref_id].add(m.from_user.id)
+            try:
+                bot.send_message(ref_id, f"+2 Points from invite - Balance {get_pts(ref_id)}")
+            except:
+                pass
+        if not is_sub(m.from_user.id):
+            mk = types.InlineKeyboardMarkup()
+            mk.add(types.InlineKeyboardButton("\u0627\u0634\u062a\u0631\u0643", url=CHANNEL_URL))
+            mk.add(types.InlineKeyboardButton("\u062a\u062d\u0642\u0642", callback_data="check_sub"))
+            bot.send_message(m.chat.id, f"{STORE}\nSubscribe first", reply_markup=mk)
+            return
+        bot.send_message(m.chat.id, f"{STORE}\nBalance: {get_pts(m.from_user.id)}\n100 Buttons Ready", reply_markup=main_menu())
+    except Exception as e:
+        print(e)
+
+@bot.callback_query_handler(func=lambda c: True)
+def all_cb(c):
+    try:
+        bot.answer_callback_query(c.id)
+        uid = c.from_user.id
+        d = c.data
+
+        if d == "check_sub":
+            if is_sub(uid):
+                bot.edit_message_text(f"{STORE}\nSubscribed", c.message.chat.id, c.message.message_id, reply_markup=main_menu())
+            return
+        if d == "back_main":
+            bot.edit_message_text(f"{STORE}\nBalance {get_pts(uid)}", c.message.chat.id, c.message.message_id, reply_markup=main_menu())
+            return
+        if d == "show_100":
+            bot.edit_message_text(f"{STORE}\n100 Full Name Buttons - Page 1/10\nBalance {get_pts(uid)}", c.message.chat.id, c.message.message_id, reply_markup=get_buttons_page(0))
+            return
+        if d.startswith("page_"):
+            page = int(d.split("_")[1])
+            bot.edit_message_text(f"{STORE}\nPage {page+1}/10\nBalance {get_pts(uid)}", c.message.chat.id, c.message.message_id, reply_markup=get_buttons_page(page))
+            return
+        if d == "invite":
+            info = bot.get_me()
+            link = f"https://t.me/{info.username}?start=ref_{uid}"
+            bot.send_message(c.message.chat.id, f"Your link:\n{link}\nInvited {len(invited[uid])}\n+2 per invite\nBalance {get_pts(uid)}")
+            return
+        if d == "ads":
+            if not is_admin(uid):
+                pts[uid] += 1
+            bot.send_message(c.message.chat.id, f"Ad watched +1\nBalance {get_pts(uid)}")
+            return
+        if d == "my_pts":
+            msg = f"Admin Infinite {get_pts(uid)}" if is_admin(uid) else f"Balance {get_pts(uid)}"
+            bot.send_message(c.message.chat.id, msg)
+            return
+        if d == "cat_files":
+            state[uid] = "file"
+            bot.send_message(c.message.chat.id, "Send file now")
+            return
+
+        # All 100 buttons execution
+        cost = 10
+        if d.startswith("btn_"):
+            try:
+                num = int(d.split("_")[1])
+                idx = num - 1
+                name = FULL_NAMES[idx] if 0 <= idx < 100 else d
+            except:
+                name = d
+                cost = 10
+        else:
+            name = d
+
+        if is_admin(uid):
+            cost = 0
+        if not is_admin(uid) and pts.get(uid,0) < cost:
+            bot.send_message(c.message.chat.id, f"Need {cost} points - Balance {get_pts(uid)}\nInvite friends +2")
+            return
+        if not is_admin(uid):
+            pts[uid] -= cost
+
+        bot.send_message(c.message.chat.id, f"Bot Executed: {name}\nBalance: {get_pts(uid)}\n{STORE}")
+
+    except Exception as e:
+        print(f"cb error {e}")
+
+@bot.message_handler(content_types=['document','photo','video'])
+def file_h(m):
+    if state.get(m.from_user.id) != "file":
+        return
+    try:
+        fid = m.photo[-1].file_id if m.content_type == 'photo' else getattr(m, m.content_type).file_id
+        finfo = bot.get_file(fid)
+        url = f"https://api.telegram.org/file/bot{TOKEN}/{finfo.file_path}"
+        state.pop(m.from_user.id, None)
+        bot.reply_to(m, f"File hosted:\n{url}\nBalance {get_pts(m.from_user.id)}")
+    except Exception as e:
+        bot.reply_to(m, f"Error {e}")
+
+@bot.message_handler(commands=['add'])
+def add_pts(m):
+    if not is_admin(m.from_user.id):
+        return
+    try:
+        _, uid, amt = m.text.split()
+        pts[int(uid)] += int(amt)
+        bot.reply_to(m, "Done")
+    except:
+        bot.reply_to(m, "Use /add id amount")
+
+print("100 Full Name Buttons Bot Running with Port Fix")
+bot.infinity_polling(none_stop=True, timeout=60)
